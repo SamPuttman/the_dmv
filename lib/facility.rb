@@ -1,5 +1,6 @@
 require 'date'
 require_relative 'vehicle.rb'
+require_relative 'registrant.rb'
 
 class Facility
   attr_reader :name, :address, :phone, :services
@@ -45,5 +46,46 @@ class Facility
   def collected_fees
     @collected_fees
   end
+
+  def administer_written_test(registrant)
+    if @services.include?('Written Test') == false
+      return false
+    elsif registrant.permit? == false
+      return false
+    elsif registrant.age < 16
+      return false
+    else @services.include?('Written Test') and registrant.permit? == true
+      registrant.license_data = { written: true, license: false, renewed: false }
+      return true
+    end
+  end
+
+  def administer_road_test(registrant)
+    if @services.include?('Road Test') == false
+      return false
+    elsif registrant.permit? == false
+      return false
+    elsif registrant.age < 16
+      return false
+    else @services.include?('Road Test') and registrant.license_data = { written: true, license: false, renewed: false }
+      registrant.license_data = { written: true, license: true, renewed: false }
+      return true
+    end
+  end
+
+  def renew_drivers_license(registrant)
+    if @services.include?('Renew License') == false
+      return false
+    elsif registrant.permit? == false
+      return false
+    elsif registrant.age < 16
+      return false
+    else @services.include?('Renew License') and registrant.license_data = { written: true, license: true, renewed: false }
+      registrant.license_data = { written: true, license: true, renewed: true }
+      return true
+    end
+  end
+
+
 
 end
